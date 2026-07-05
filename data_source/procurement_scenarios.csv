@@ -1,9 +1,0 @@
-scenario_id,scenario_name,supplier_id,rm_id,unit_price,lead_time_days,min_qty,discount_pct
-SCN_01,Standard Order (Mua tiêu chuẩn),SUP001,RM001,4.5,3,500,0.0
-SCN_01,Standard Order (Mua tiêu chuẩn),SUP002,RM002,2.6,7,1000,0.0
-SCN_02,Bulk Volume Tier (Mua số lượng lớn >5000 chiết khấu 15%),SUP001,RM001,3.82,5,5000,15.0
-SCN_02,Bulk Volume Tier (Mua số lượng lớn >5000 chiết khấu 15%),SUP002,RM002,2.21,8,5000,15.0
-SCN_03,Express Rush Order (Đặt hàng khẩn cấp bằng hàng không),SUP001,RM001,5.4,1,100,-20.0
-SCN_03,Express Rush Order (Đặt hàng khẩn cấp bằng hàng không),SUP001,RM002,3.5,1,100,-20.0
-SCN_04,Long-term Fixed Contract (Hợp đồng cố định giá 6 tháng),SUP002,RM001,3.95,4,1000,12.0
-SCN_04,Long-term Fixed Contract (Hợp đồng cố định giá 6 tháng),SUP002,RM002,2.35,4,1000,10.0
