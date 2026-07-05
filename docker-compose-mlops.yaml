@@ -1,0 +1,41 @@
+services:
+  # 1. MLFLOW TRACKING SERVER (Quản lý Version & Registry của mô hình AI Forecasting)
+  mlflow_server:
+    restart: always
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: e2e-mlflow-server
+    ports:
+      - "5001:5000"
+    networks:
+      - e2e_supplychain_net
+    environment:
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_SECRET_ACCESS_KEY=minioadmin123
+    command: >
+      mlflow server
+      --backend-store-uri postgresql://lakehouse:lakehouse123@postgres-source:5432/metadata_db
+      --default-artifact-root s3://mlflow/
+      --host 0.0.0.0
+      --port 5000
+      --cors-allowed-origins="*"
+
+  # 2. APS REST API SERVING ENGINE (FastAPI trả ra Kế hoạch Mua hàng & Sản xuất cho ERP/Power BI)
+  aps_serving_api:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./mlops/serving_pipeline/Dockerfile
+    container_name: e2e-aps-serving-api
+    ports:
+      - "8005:8000"  # Truy cập Swagger UI tại http://localhost:8005/docs
+    networks:
+      - e2e_supplychain_net
+    depends_on:
+      - mlflow_server
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow_server:5000
+
+networks:
+  e2e_supplychain_net:
+    external: true

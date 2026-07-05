@@ -1,0 +1,22 @@
+# --- Airflow Providers (Cài thêm plugin mở rộng) ---
+apache-airflow-providers-amazon
+apache-airflow-providers-postgres
+
+# --- Big Data Processing & Lakehouse (Spark + Iceberg) ---
+pyspark==3.5.1
+pyiceberg
+polars
+pandas
+numpy
+pyarrow
+duckdb
+db-dtypes
+
+# --- Database Connections ---
+adbc-driver-postgresql
+sqlalchemy
+psycopg2-binary
+
+# --- Cloud Storage (MinIO/S3) ---
+s3fs
+boto3

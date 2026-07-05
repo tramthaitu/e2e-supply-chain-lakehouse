@@ -1,0 +1,62 @@
+services:
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: prometheus
+    user: root # Chạy quyền root để tránh lỗi Permission Denied khi ghi file ra máy thật
+    ports:
+      - "9090:9090"
+    volumes:
+      # Map file cấu hình vào trong container
+      - ./monitoring_config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      # Map dữ liệu chuỗi thời gian (time-series) ra ngoài để không bị mất
+      - ./data/prometheus:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - lakehouse-net
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:10.0.3
+    container_name: grafana
+    user: root 
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+      - ./monitoring_config/grafana/dashboards:/var/lib/grafana/dashboards
+    networks:
+      - lakehouse-net
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    container_name: cadvisor
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /cgroup:/cgroup:ro
+    ports:
+      - "8080:8080"
+    networks:
+      - lakehouse-net
+    restart: unless-stopped
+
+networks:
+  lakehouse-net:
+    name: lakehouse-net
+    external: true

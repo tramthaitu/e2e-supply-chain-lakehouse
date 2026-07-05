@@ -1,0 +1,74 @@
+version: 2
+
+sources:
+  - name: landing
+    database: iceberg
+    schema: landing
+    description: "Tầng dữ liệu thô (Bronze Layer) nạp từ Postgres sang Iceberg thông qua Spark"
+    tables:
+      - name: master_data_products
+        description: "Danh mục sản phẩm master"
+        columns:
+          - name: product_id
+            tests:
+              - unique
+              - not_null
+
+      - name: master_data_customers
+        description: "Thông tin khách hàng master"
+        columns:
+          - name: customer_id
+            tests:
+              - unique
+              - not_null
+
+      - name: master_data_promotions
+        description: "Các chiến dịch khuyến mãi"
+      - name: master_data_geography
+        description: "Danh sách mã bưu chính các vùng địa lý"
+
+      - name: sales_orders
+        description: "Thông tin đơn hàng transaction tại tầng thô Bronze"
+        tests:
+          # Kiểm tra chất lượng dữ liệu ngay tầng Source: Cảnh báo trùng lặp đơn đặt hàng
+          - monthly_order_code_quality_warn:
+              config:
+                severity: warn
+              date_field: order_date
+              order_code_field: order_id
+              issue_type: 'DUPLICATE'
+              lookback_months: 6
+        columns:
+          - name: order_id
+            tests:
+              - unique
+              - not_null
+
+      - name: sales_order_items
+        description: "Chi tiết từng dòng sản phẩm trong đơn hàng"
+        tests:
+          # Kiểm tra tính toàn vẹn tham chiếu ngay tầng Source: Không để chi tiết đơn bị mồ côi
+          - left_join_null_check:
+              join_key: order_id
+              helper_table: source('landing', 'sales_orders')
+              helper_key: order_id
+              warn_threshold: 0
+        columns:
+          - name: order_id
+            tests:
+              - not_null
+
+      - name: sales_payments
+        description: "Thông tin thanh toán tương ứng 1:1 với đơn hàng"
+      - name: sales_returns
+        description: "Các sản phẩm bị trả lại"
+      - name: sales_sales
+        description: "Dữ liệu doanh thu analytical"
+      - name: supply_chain_shipments
+        description: "Thông tin vận chuyển đơn hàng"
+      - name: supply_chain_inventory
+        description: "Ảnh chụp tồn kho cuối tháng operational"
+      - name: marketing_reviews
+        description: "Đánh giá sản phẩm từ khách hàng"
+      - name: marketing_web_traffic
+        description: "Dữ liệu lưu lượng truy cập website từ khách hàng"

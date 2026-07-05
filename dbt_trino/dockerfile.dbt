@@ -1,0 +1,16 @@
+# Sử dụng image Python bản nhẹ nhất
+FROM python:3.9-slim
+
+# Cập nhật hệ thống cơ bản
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    gcc \
+    python3-dev \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /usr/app/dbt
+
+# Copy file requirements vào container và cài đặt
+COPY requirements-dbt.txt .
+RUN pip install --no-cache-dir -r requirements-dbt.txt

@@ -1,0 +1,26 @@
+# File: profiles.yml
+dbt_trino:
+  target: dev
+  
+  outputs:
+    # Môi trường chạy nháp (Khi bạn gõ dbt run)
+    dev:
+      type: trino
+      host: localhost
+      port: 8082
+      user: admin
+      catalog: iceberg
+      schema: analytics_dev  # Schema gốc cho dev
+      threads: 1
+      method: none
+      
+    # Môi trường chạy thật (Khi Airflow gọi dbt run --target prod)
+    prod:
+      type: trino
+      host: trino-coordinator
+      port: 8080
+      user: admin
+      catalog: iceberg
+      schema: analytics_prod # Schema gốc cho prod
+      threads: 1
+      method: none

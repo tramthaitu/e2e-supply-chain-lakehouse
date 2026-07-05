@@ -1,0 +1,8 @@
+stages:
+  feature_engineering_from_minio:
+    cmd: python prepare_feast_features.py
+    deps:
+      - prepare_feast_features.py
+    outs:
+      - ../../data_source/processed_demand_features.parquet
+      - ../../data_source/processed_oee_features.parquet

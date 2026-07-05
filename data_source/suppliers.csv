@@ -1,0 +1,7 @@
+supplier_id,supplier_name,country,reliability_score
+SUP001,Vinatex Textile Corp,Vietnam,0.96
+SUP002,Formosa Synthetic Fiber JSC,Taiwan,0.91
+SUP003,Dong Nai Rubber Group,Vietnam,0.98
+SUP004,"YKK Zippers Vietnam Co., Ltd",Japan,0.99
+SUP005,Saigon Green Packaging JSC,Vietnam,0.94
+SUP006,Guangzhou Chemical Dye Ltd,China,0.86

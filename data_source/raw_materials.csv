@@ -1,0 +1,11 @@
+rm_id,rm_name,unit,std_cost
+RM001,Premium Cotton Fabric,meter,4.5
+RM002,Polyester Blend Fabric,meter,2.8
+RM003,High-Tenacity Thread,spool,0.5
+RM004,Rubber Sole Unit,pair,6.0
+RM005,Memory Foam Insole,pair,2.2
+RM006,YKK Metal Zipper,piece,0.8
+RM007,Eco-Friendly Dye Chemical,liter,12.0
+RM008,Kraft Packaging Box,box,1.1
+RM009,Woven Brand Label,piece,0.15
+RM010,Waterproof Coating,liter,15.0

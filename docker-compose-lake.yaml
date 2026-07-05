@@ -1,0 +1,61 @@
+services:
+  nessie-catalog:
+    image: projectnessie/nessie:0.76.6
+    container_name: nessie-catalog
+    ports:
+      - "19120:19120"
+    networks:
+      - lakehouse-net
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    environment:
+      MINIO_REGION_NAME: us-east-1
+      MINIO_REGION: us-east-1
+      MINIO_DOMAIN: minio
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-admin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-password123}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./data/minio:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    entrypoint: >
+      /bin/sh -c "
+      minio server /data --console-address ':9001' &
+      sleep 5;
+      mc alias set batman http://localhost:9000 $${MINIO_ROOT_USER:-admin} $${MINIO_ROOT_PASSWORD:-password123};
+      mc mb batman/local-lakehouse || true;
+      tail -f /dev/null"
+    networks:
+      - lakehouse-net
+      
+  postgres-source:
+    image: postgres:15
+    container_name: postgres-source
+    environment:
+      POSTGRES_USER: ${SOURCE_POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${SOURCE_POSTGRES_PASSWORD:-admin_password}
+      POSTGRES_DB: ${SOURCE_POSTGRES_DB:-supply_chain_db}
+      TZ: Asia/Ho_Chi_Minh
+      PGTZ: Asia/Ho_Chi_Minh
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-source-data:/var/lib/postgresql/data
+    networks:
+      - lakehouse-net
+
+networks:
+  lakehouse-net:
+    name: lakehouse-net
+    external: true
+
+volumes:
+  postgres-source-data:

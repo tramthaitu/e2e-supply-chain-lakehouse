@@ -1,0 +1,61 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "Bảng chiều lưu thông tin và phân khúc khách hàng"
+    columns:
+      - name: customer_id
+        description: "Mã định danh duy nhất của khách hàng"
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_products
+    description: "Bảng chiều lưu thông tin sản phẩm và giá bán"
+    columns:
+      - name: product_id
+        description: "Mã định danh duy nhất của sản phẩm"
+        tests:
+          - unique
+          - not_null
+
+  - name: fct_sales_orders
+    description: "Bảng sự kiện bán hàng theo dõi đơn đặt hàng (Incremental CDC)"
+    tests:
+      # Test tùy biến 1: Kiểm tra lỗi mất mát liên kết (Orphan orders) với dim_customers
+      - left_join_null_check:
+          join_key: customer_id
+          helper_table: ref('dim_customers')
+          helper_key: customer_id
+          warn_threshold: 0
+      
+      # Test tùy biến 2: Kiểm tra cảnh báo trùng lặp mã đơn hàng theo tháng
+      - monthly_order_code_quality_warn:
+          date_field: order_date
+          order_code_field: order_id
+          issue_type: 'DUPLICATE'
+          lookback_months: 6
+
+    columns:
+      - name: order_id
+        description: "Mã đơn hàng duy nhất"
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Mã khách hàng đặt mua"
+        tests:
+          - not_null
+      - name: order_date
+        description: "Ngày đặt hàng"
+        tests:
+          - not_null
+
+  - name: fct_order_fulfillment
+    description: "Bảng sự kiện theo dõi giao hàng và hoàn trả"
+    columns:
+      - name: order_id
+        description: "Mã đơn hàng"
+        tests:
+          - unique
+          - not_null
