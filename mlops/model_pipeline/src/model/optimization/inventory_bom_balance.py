@@ -3,7 +3,7 @@ import csv
 from typing import Dict, List
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 from config.aps_config import APSConfig
 
 class InventoryBOMCalculator:

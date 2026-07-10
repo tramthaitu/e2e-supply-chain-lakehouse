@@ -3,8 +3,7 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 
-from model.inventory_bom_balance import InventoryBOMCalculator
-from model.procurement_lp_solver import ProcurementOptimizer
+from model.optimization import InventoryBOMCalculator, ProcurementOptimizer
 
 def run_bom_procurement_lp():
     if hasattr(sys.stdout, 'reconfigure'):

@@ -9,8 +9,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 
 from mlflow_utils.experiment_tracker import ExperimentTracker
 from mlflow_utils.model_registry import ModelRegistry
-from model.demand_forecaster_trainer import DemandForecasterTrainer
-from model.demand_evaluator import DemandModelEvaluator
+from model.forecasting import DemandForecasterTrainer, DemandModelEvaluator
 from config.aps_config import APSConfig
 
 def run_training_pipeline():

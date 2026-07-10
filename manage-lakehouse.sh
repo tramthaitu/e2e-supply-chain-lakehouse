@@ -13,8 +13,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 build_images() {
     echo "Đang Build lại môi trường (Airflow, dbt & Spark)..."
     cd "$SCRIPT_DIR"
-    docker compose -f docker-compose-airflow.yaml build
-    docker compose -f docker-compose-spark.yaml build
+    docker compose -f docker_compose/docker-compose-airflow.yaml --project-directory . build
+    docker compose -f docker_compose/docker-compose-spark.yaml --project-directory . build
     echo "Build hoàn tất! Môi trường đã nạp đủ các thư viện mới."
 }
 
@@ -26,22 +26,22 @@ start_services() {
     docker network create lakehouse-net || true
     
     echo "1. Bật Tầng Lưu trữ & Catalog (MinIO + Nessie)..."
-        docker compose -f docker-compose-lake.yaml up -d
+    docker compose -f docker_compose/docker-compose-lake.yaml --project-directory . up -d
     sleep 5
     
     echo "2. Bật Động cơ Truy vấn (Trino)..."
-    docker compose -f docker-compose-trino.yaml up -d
+    docker compose -f docker_compose/docker-compose-trino.yaml --project-directory . up -d
 
     echo "3. Bật Cụm Xử lý Lớn (Spark Cluster)..."
-    docker compose -f docker-compose-spark.yaml up --build -d
+    docker compose -f docker_compose/docker-compose-spark.yaml --project-directory . up --build -d
     sleep 5
 
     echo "  -> Bật Hệ thống Giám sát (Prometheus & Grafana)..."
-    docker compose -f docker-compose-monitoring.yaml up -d
+    docker compose -f docker_compose/docker-compose-monitoring.yaml --project-directory . up -d
     
     echo "4. Bật Hệ thống Điều phối (Airflow)..."
     # Thêm --build để chắc chắn nó luôn dùng image mới nhất nếu có thay đổi
-    docker compose -f docker-compose-airflow.yaml up -d
+    docker compose -f docker_compose/docker-compose-airflow.yaml --project-directory . up -d
     sleep 5
     
     echo "Tất cả dịch vụ đã Online!"
@@ -72,11 +72,11 @@ stop_services() {
     echo "Đang tắt hệ thống và dọn dẹp tàn dư (Dữ liệu vẫn được giữ lại an toàn)..."
     cd "$SCRIPT_DIR"
     
-    docker compose -f docker-compose-airflow.yaml down --remove-orphans
-    docker compose -f docker-compose-spark.yaml down --remove-orphans
-    docker compose -f docker-compose-trino.yaml down --remove-orphans
-    docker compose -f docker-compose-monitoring.yaml down --remove-orphans
-    docker compose -f docker-compose-lake.yaml down --remove-orphans
+    docker compose -f docker_compose/docker-compose-airflow.yaml --project-directory . down --remove-orphans
+    docker compose -f docker_compose/docker-compose-spark.yaml --project-directory . down --remove-orphans
+    docker compose -f docker_compose/docker-compose-trino.yaml --project-directory . down --remove-orphans
+    docker compose -f docker_compose/docker-compose-monitoring.yaml --project-directory . down --remove-orphans
+    docker compose -f docker_compose/docker-compose-lake.yaml --project-directory . down --remove-orphans
     
     echo "Hệ thống đã tắt an toàn."
 }
@@ -94,11 +94,11 @@ destroy_services() {
     echo "CẢNH BÁO: Đang xóa toàn bộ container và DỮ LIỆU VOLUMES..."
     cd "$SCRIPT_DIR"
     
-    docker compose -f docker-compose-airflow.yaml down -v --remove-orphans
-    docker compose -f docker-compose-spark.yaml down -v --remove-orphans
-    docker compose -f docker-compose-trino.yaml down -v --remove-orphans
-    docker compose -f docker-compose-monitoring.yaml down -v --remove-orphans
-    docker compose -f docker-compose-lake.yaml down -v --remove-orphans
+    docker compose -f docker_compose/docker-compose-airflow.yaml --project-directory . down -v --remove-orphans
+    docker compose -f docker_compose/docker-compose-spark.yaml --project-directory . down -v --remove-orphans
+    docker compose -f docker_compose/docker-compose-trino.yaml --project-directory . down -v --remove-orphans
+    docker compose -f docker_compose/docker-compose-monitoring.yaml --project-directory . down -v --remove-orphans
+    docker compose -f docker_compose/docker-compose-lake.yaml --project-directory . down -v --remove-orphans
     
     echo "Đã xóa sạch hệ thống."
 }

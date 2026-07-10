@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 from typing import List, Dict, Tuple
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 from config.aps_config import APSConfig
 
 class ParetoAbcXyzAnalyzer:

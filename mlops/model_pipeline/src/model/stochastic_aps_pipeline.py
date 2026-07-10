@@ -6,11 +6,10 @@ from typing import Dict, List, Any
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 from config.aps_config import APSConfig
-from model.pareto_abc_xyz import ParetoAbcXyzAnalyzer
-from model.stochastic_forecaster import StochasticDemandForecaster
-from model.markov_risk_analyzer import MarkovRiskAnalyzer
-from model.scenario_generator import StochasticScenarioGenerator
-from model.stochastic_lp_optimizer import StochasticProcurementOptimizer
+from model.segmentation import ParetoAbcXyzAnalyzer
+from model.forecasting import StochasticDemandForecaster
+from model.risk_scenarios import MarkovRiskAnalyzer, StochasticScenarioGenerator
+from model.optimization import StochasticProcurementOptimizer
 
 class StochasticAPSPipeline:
     """

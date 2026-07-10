@@ -9,9 +9,7 @@ ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
 sys.path.append(os.path.join(ROOT_DIR, "mlops", "model_pipeline", "src"))
 
 try:
-    from model.inventory_bom_balance import InventoryBOMCalculator
-    from model.procurement_lp_solver import ProcurementOptimizer
-    from model.production_scheduler_lp import ProductionSchedulerAPS
+    from model.optimization import InventoryBOMCalculator, ProcurementOptimizer, ProductionSchedulerAPS
 except ImportError as e:
     print(f"⚠️ Warning importing modules: {e}")
 
