@@ -10,8 +10,8 @@ services:
       - e2e_supplychain_net
     environment:
       - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
-      - AWS_ACCESS_KEY_ID=minioadmin
-      - AWS_SECRET_ACCESS_KEY=minioadmin123
+      - AWS_ACCESS_KEY_ID=${MINIO_ROOT_USER:-admin}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD:-password123}
     command: >
       mlflow server
       --backend-store-uri postgresql://lakehouse:lakehouse123@postgres-source:5432/metadata_db

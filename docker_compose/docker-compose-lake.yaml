@@ -32,6 +32,8 @@ services:
       sleep 5;
       mc alias set batman http://localhost:9000 $${MINIO_ROOT_USER:-admin} $${MINIO_ROOT_PASSWORD:-password123};
       mc mb batman/local-lakehouse || true;
+      mc mb batman/mlflow || true;
+      mc mb batman/dvc-lakehouse || true;
       tail -f /dev/null"
     networks:
       - lakehouse-net
